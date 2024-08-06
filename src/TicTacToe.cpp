@@ -42,7 +42,13 @@ const std::string gameOverTokens[] =
 void TicTacToe::checkWin() {
     if(currMask & (currMask << 1) & (currMask << 2)) {
         finished = true;
-        result = lastPlayer?1:-1;
+        if(lastPlayer) {
+            result = 1;
+            delta = 5;
+        } else {
+            result = -1;
+            delta = -5;
+        }
     }
 }
 
@@ -51,9 +57,9 @@ void TicTacToe::makeMove(bool player, int move) {
     assert (0 == (bool)(playedMask & moveMask[move]) && "Square is already ocupied");
 
     if(player) {
-        player1Count++;
+        delta++;
     } else {
-        player2Count++;
+        delta--;
     }
 
     if (lastPlayer != player) {
@@ -69,6 +75,7 @@ void TicTacToe::makeMove(bool player, int move) {
 
     if (playedMask == fullBoard) {
         finished = true;
+        delta = 0;
     }
 
 
@@ -121,27 +128,6 @@ int8_t TicTacToe::getResult() {
     return result;
 }
 
-std::pair<uint8_t, uint8_t> TicTacToe::count() {
-    /*
-    std::pair<uint8_t, uint8_t> result = std::pair(0, 0);
-
-    for(int i: moveOrder) {
-        if (0 == (bool)(currMask & moveMask[i])) {
-            result.first++;
-        }
-    }
-    currMask ^= playedMask;
-    for(int i: moveOrder) {
-        if (0 == (bool)(currMask & moveMask[i])) {
-            result.second++;
-        }
-    }
-    currMask ^= playedMask;
-
-    if(!lastPlayer) {
-        std::swap(result.first, result.second);
-    }
-    */
-
-    return std::pair(player1Count, player2Count);
+int8_t TicTacToe::count() {
+    return delta;
 }

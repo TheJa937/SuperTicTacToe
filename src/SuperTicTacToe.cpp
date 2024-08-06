@@ -111,22 +111,12 @@ double SuperTicTacToe::eval() {
     if(finished) {
         return (double) result;
     }
-    int p1 = 0, p2 = 0;
+    int8_t count = 0;
     for(TicTacToe game: games) {
-        if(game.isFinished()) {
-            if(game.getResult() == 1) {
-                p1 += 5;
-            } else {
-                p2 += 5;
-            }
-            continue;
-        }
-        auto count = game.count();
-        p1 += count.first;
-        p2 += count.second;
+        count += game.count();
     }
     
-    double result = ((double)(p1 - p2)) / 64;
+    double result = ((double)(count)) / 64;
 
     assert (-1 < result && result < 1 && "bad eval function");
     return result;

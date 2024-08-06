@@ -1,10 +1,15 @@
 #include "PlayerAgent.h"
 #include <iostream>
+#include "MoveList.h"
 
 void PlayerAgent::makeMove(SuperTicTacToe &game) {
     std::cout << "possible moves: ";
-    for(int i:game.getAllMoves()) {
-        std::cout << i << " ";
+    MoveList temp;
+
+    game.getAllMoves(temp);
+
+    for(int i = 0; i < temp.getLength(); i++) {
+        std::cout << temp.get(i) << " ";
     }
     std::cout << std::endl;
 

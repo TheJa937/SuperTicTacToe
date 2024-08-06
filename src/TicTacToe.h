@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include "MoveList.h"
 
 #ifndef TICTACTOE
 #define TICTACTOE
@@ -24,7 +25,7 @@ class TicTacToe {
         bool getLastPlayer();
         int8_t getResult();
         std::string toFancyString();
-        void appendAllMoves(std::vector<int8_t> &moves, int offset);
+        void appendAllMoves(MoveList &moves, int offset);
         std::pair<uint8_t, uint8_t> count();
 };
 

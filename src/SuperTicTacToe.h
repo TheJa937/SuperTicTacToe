@@ -1,6 +1,7 @@
 #include "TicTacToe.h"
 #include <vector>
 #include <sstream>
+#include "MoveList.h"
 
 #ifndef SUPERTICTACTOE
 #define SUPERTICTACTOE
@@ -27,7 +28,7 @@ class SuperTicTacToe {
         bool isFinished();
         bool getLastPlayer();
         std::string toString();
-        std::vector<int8_t> getAllMoves();
+        void getAllMoves(MoveList &list);
         double eval();
 };
 

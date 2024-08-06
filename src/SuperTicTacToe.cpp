@@ -92,17 +92,18 @@ std::string SuperTicTacToe::toString() {
     return result;
 }
 
-std::vector<int8_t> SuperTicTacToe::getAllMoves() {
+void SuperTicTacToe::getAllMoves(MoveList &list) {
     int targetGame = moveToGameMove(lastMove);
-    std::vector<int8_t> result;
+
+    list.reset();
+
     if (lastMove == -1 || games[targetGame].isFinished()) {
         for(auto i: moveOrder) {
-            games[i].appendAllMoves(result, i * 9);
+            games[i].appendAllMoves(list, i * 9);
         }
     } else {
-        games[targetGame].appendAllMoves(result, 9 * targetGame);
+        games[targetGame].appendAllMoves(list, 9 * targetGame);
     }
-    return result;
 }
 
 //eval not based on current player

@@ -19,9 +19,11 @@ std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
     double a = -2, b = 2;
 
-    for(auto i: game.getAllMoves()) {
+    game.getAllMoves(myMovePool[depth]);
+
+    for(int i = 0; i < myMovePool[depth].getLength(); i++) {
         myPool[depth] = game;
-        myPool[depth].makeMove(i);
+        myPool[depth].makeMove(myMovePool[depth].get(i));
 
         double eval = -0.99 * negamax(myPool[depth], depth - 1, -b, -a);
 
@@ -29,7 +31,7 @@ std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
         if (eval > bestEval) {
             bestEval = eval;
-            _bestMove = i;
+            _bestMove = myMovePool[depth].get(i);
         }
 
         if(bestEval > a) {
@@ -58,9 +60,11 @@ double MiniMax::negamax(SuperTicTacToe &game, int depth, double a, double b) {
 
     double bestValue = -2;
 
-    for(auto i: game.getAllMoves()) {
+    game.getAllMoves(myMovePool[depth]);
+
+    for(int i = 0; i < myMovePool[depth].getLength(); i++) {
         myPool[depth] = game;
-        myPool[depth].makeMove(i);
+        myPool[depth].makeMove(myMovePool[depth].get(i));
         double value = -0.99 * negamax(myPool[depth], depth - 1, -b, -a);
         if(value > bestValue) {
             bestValue = value;

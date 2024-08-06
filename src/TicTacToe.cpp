@@ -78,12 +78,12 @@ bool TicTacToe::isFinished(){
     return finished;
 }
 
-void TicTacToe::appendAllMoves(std::vector<int8_t> &moves, int offset) {
+void TicTacToe::appendAllMoves(MoveList &moves, int offset) {
     if(finished) return;
 
     for(int i: moveOrder) {
         if (0 == (bool)(playedMask & moveMask[i])) {
-            moves.push_back(i + offset);
+            moves.addMove(i + offset);
         }
     }
 }

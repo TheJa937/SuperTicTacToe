@@ -1,15 +1,21 @@
-#include "MiniMax.hpp"
+#include "MiniMax.h"
+#include "SuperTicTacToe.h"
 #include <iostream>
 
+unsigned long long total = 0;
+
 void MiniMax::makeMove(SuperTicTacToe& game) {
+    myCoolVariable = 0;
     auto result = bestMove(game);
-    std::cout << (int) result.first << " " << (double)result.second << std::endl;
+    total += myCoolVariable;
+    std::cout << "Move: " << (int) result.first << " Eval: " << (double)result.second << " Games Evaled: " << myCoolVariable << " total: " << total << std::endl;
     game.makeMove(result.first);
 }
 /*
 void MiniMax::setDepth(int _depth) {
     depth = _depth;
 }*/
+
 // best move, eval
 std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
@@ -21,9 +27,9 @@ std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
     game.getAllMoves(myMovePool[depth]);
 
-    for(int i = 0; i < myMovePool[depth].getLength(); i++) {
+    for(int i = 0; i < myMovePool[depth]->size(); i++) {
         myPool[depth] = game;
-        myPool[depth].makeMove(myMovePool[depth].get(i));
+        myPool[depth].makeMove((*myMovePool[depth])[i]);
 
         double eval = -0.99 * negamax(myPool[depth], depth - 1, -b, -a);
 
@@ -31,7 +37,7 @@ std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
         if (eval > bestEval) {
             bestEval = eval;
-            _bestMove = myMovePool[depth].get(i);
+            _bestMove = (*myMovePool[depth])[i];
         }
 
         if(bestEval > a) {
@@ -62,9 +68,9 @@ double MiniMax::negamax(SuperTicTacToe &game, int depth, double a, double b) {
 
     game.getAllMoves(myMovePool[depth]);
 
-    for(int i = 0; i < myMovePool[depth].getLength(); i++) {
+    for(int i = 0; i < myMovePool[depth]->size(); i++) {
         myPool[depth] = game;
-        myPool[depth].makeMove(myMovePool[depth].get(i));
+        myPool[depth].makeMove((*myMovePool[depth])[i]);
         double value = -0.99 * negamax(myPool[depth], depth - 1, -b, -a);
         if(value > bestValue) {
             bestValue = value;
@@ -80,7 +86,9 @@ double MiniMax::negamax(SuperTicTacToe &game, int depth, double a, double b) {
 
     return bestValue;
 }
-/*
+
 MiniMax::MiniMax() {
-    myPool.resize(depth + 1);
-}*/
+    for(int i = 0; i < depth + 1; i++) {
+        myMovePool[i] = new std::vector<int>(81);
+    }
+}

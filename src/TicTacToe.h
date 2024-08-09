@@ -25,7 +25,7 @@ class TicTacToe {
         bool getLastPlayer();
         int8_t getResult();
         std::string toFancyString();
-        void appendAllMoves(MoveList &moves, int offset);
+        void appendAllMoves(std::vector<int> *moves, int offset);
         int8_t count();
 };
 

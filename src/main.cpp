@@ -2,14 +2,14 @@
 #include "SuperTicTacToe.h"
 #include "Agent.h"
 #include "PlayerAgent.h"
-#include "MiniMax.hpp"
+#include "MiniMax.h"
 
 using namespace std;
 
 int main() {
     SuperTicTacToe game;
 
-    Agent* agents[] = {new MiniMax(), new MiniMax()};
+    Agent* agents[] = {new MiniMax(), new PlayerAgent()};
 
 
     int i = 0;

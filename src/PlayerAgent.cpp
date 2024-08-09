@@ -4,12 +4,12 @@
 
 void PlayerAgent::makeMove(SuperTicTacToe &game) {
     std::cout << "possible moves: ";
-    MoveList temp;
+    std::vector<int> *temp = new std::vector<int>();
 
     game.getAllMoves(temp);
 
-    for(int i = 0; i < temp.getLength(); i++) {
-        std::cout << temp.get(i) << " ";
+    for(int i = 0; i < temp->size(); i++) {
+        std::cout << (*temp)[i] << " ";
     }
     std::cout << std::endl;
 

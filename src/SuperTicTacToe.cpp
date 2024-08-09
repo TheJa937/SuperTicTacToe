@@ -2,6 +2,7 @@
 
 const uint8_t moveOrder[] = {4, 0, 2, 6, 8, 1, 3, 5, 7};
 
+unsigned long long myCoolVariable = 0;
 
 int moveToGame(int move) {
     return move / 9;
@@ -17,39 +18,31 @@ void SuperTicTacToe::checkForFinish() {
 
 void SuperTicTacToe::makeMove(int move) {
     assert (move >= 0 && move < 81 && "illegal move");
-
-
+    assert (!finished && "Game Over");
 
     if (lastMove != -1 && !games[moveToGameMove(lastMove)].isFinished()) {
         assert (moveToGame(move) == moveToGameMove(lastMove) && "Move is not in correct Game");
     }
 
-    TicTacToe* game = &games[moveToGame(move)];
+    TicTacToe& game = games[moveToGame(move)];
 
-    assert (!game->isFinished() && "This Game is already over");
+    assert (!game.isFinished() && "This Game is already over");
 
     lastPlayer = !lastPlayer;
     lastMove = move;
 
-    game->makeMove(lastPlayer, moveToGameMove(move));
+    game.makeMove(lastPlayer, moveToGameMove(move));
 
-    if(game->isFinished()) {
-        if(game->getResult() != 0) {
+
+    if(game.isFinished()) {
+        // check if all games have ended
+        finished = std::all_of(games, games + 9, [](TicTacToe& game) {return game.isFinished();});
+
+        if(game.getResult() != 0) {
             thisGame.makeMove(lastPlayer, moveToGame(move));
-        }
-        bool allFinished = true;
-        for(TicTacToe game: games) {
-            allFinished &= game.isFinished();
-        }
-        if(allFinished) {
-            finished = true;
+            checkForFinish();
         }
     }
-
-    
-
-    checkForFinish();
-
 }
 
 int8_t SuperTicTacToe::getResult() {
@@ -92,10 +85,10 @@ std::string SuperTicTacToe::toString() {
     return result;
 }
 
-void SuperTicTacToe::getAllMoves(MoveList &list) {
+void SuperTicTacToe::getAllMoves(std::vector<int> *list) {
     int targetGame = moveToGameMove(lastMove);
 
-    list.reset();
+    list->clear();
 
     if (lastMove == -1 || games[targetGame].isFinished()) {
         for(auto i: moveOrder) {
@@ -108,6 +101,8 @@ void SuperTicTacToe::getAllMoves(MoveList &list) {
 
 //eval not based on current player
 double SuperTicTacToe::eval() {
+    myCoolVariable++;
+//    return (double) result;
     if(finished) {
         return (double) result;
     }

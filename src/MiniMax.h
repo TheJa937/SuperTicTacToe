@@ -10,11 +10,11 @@ class MiniMax : public Agent {
     private:
         int depth = _depth;
         SuperTicTacToe myPool[_depth + 1];
-        MoveList myMovePool[_depth + 1];
+        std::vector<int>* myMovePool[_depth + 1];
         std::pair<int8_t, double> bestMove(SuperTicTacToe &game);
         double negamax(SuperTicTacToe &game, int depth, double a, double b);
     public:
-//        MiniMax();
+        MiniMax();
         void makeMove(SuperTicTacToe &game);
 //        void setDepth(int _depth);
 };

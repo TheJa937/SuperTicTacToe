@@ -2,9 +2,12 @@
 #include <vector>
 #include <sstream>
 #include "MoveList.h"
+#include <algorithm>
 
 #ifndef SUPERTICTACTOE
 #define SUPERTICTACTOE
+
+extern unsigned long long myCoolVariable;
 
 class SuperTicTacToe {
     private:
@@ -28,7 +31,7 @@ class SuperTicTacToe {
         bool isFinished();
         bool getLastPlayer();
         std::string toString();
-        void getAllMoves(MoveList &list);
+        void getAllMoves(std::vector<int> *list);
         double eval();
 };
 

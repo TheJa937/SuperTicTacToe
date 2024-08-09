@@ -5,7 +5,7 @@
 
 class MoveList {
     private:
-        int8_t list[81] = {};
+        int list[81] = {};
         int8_t length = 0;
     public:
         void addMove(int move);

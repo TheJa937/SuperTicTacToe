@@ -1,4 +1,4 @@
-#include "TicTacToe.h"
+#include "TicTacToe1.h"
 
 /*
     Board representation in Masks
@@ -39,28 +39,21 @@ const std::string gameOverTokens[] =
 "/ \\\n"
  };
 
-void TicTacToe::checkWin() {
+void TicTacToe1::checkWin() {
     if(currMask & (currMask << 1) & (currMask << 2)) {
         finished = true;
         if(lastPlayer) {
             result = 1;
-            delta = 5;
         } else {
             result = -1;
-            delta = -5;
         }
     }
 }
 
-void TicTacToe::makeMove(bool player, int move) {
+void TicTacToe1::makeMove(bool player, int move) {
     assert (!finished && "Game is already Over");
     assert (0 == (bool)(playedMask & moveMask[move]) && "Square is already ocupied");
 
-    if(player) {
-        delta++;
-    } else {
-        delta--;
-    }
 
     if (lastPlayer != player) {
         currMask ^= playedMask;
@@ -75,17 +68,16 @@ void TicTacToe::makeMove(bool player, int move) {
 
     if (playedMask == fullBoard) {
         finished = true;
-        delta = 0;
     }
 
 
 }
 
-bool TicTacToe::isFinished(){
+bool TicTacToe1::isFinished(){
     return finished;
 }
 
-void TicTacToe::appendAllMoves(std::vector<int> *moves, int offset) {
+void TicTacToe1::appendAllMoves(std::vector<int> *moves, int offset) {
     if(finished) return;
 
     for(int i: moveOrder) {
@@ -95,39 +87,38 @@ void TicTacToe::appendAllMoves(std::vector<int> *moves, int offset) {
     }
 }
 
-std::string TicTacToe::toString() {
+std::string TicTacToe1::toString() {
     std::string result = "";
 
-    for (int i = 0; i < 12; i++) {
-        if (3 == (i % 4)) {
-            result.append("\n");
-            continue;
+    for (int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++){
+            int index = 3 * i + j;
+
+            if (playedMask & moveMask[index]) {
+                result += playerTokens[lastPlayer == (bool)(currMask & moveMask[index])];
+            } else {
+                result.append(".");
+            }
         }
-        if (playedMask & (1 << (31 - i))) {
-            result += playerTokens[lastPlayer == (bool)(currMask & (1 << (31 - i)))];
-        } else {
-            result.append(".");
-        }
+        result.append("\n");
     }
 
     return result;
 }
 
-std::string TicTacToe::toFancyString() {
+std::string TicTacToe1::toFancyString() {
     if(finished) {
         return gameOverTokens[result + 1];
     }
     return toString();
 }
 
-bool TicTacToe::getLastPlayer() {
+bool TicTacToe1::getLastPlayer() {
     return lastPlayer;
 }
 
-int8_t TicTacToe::getResult() {
+int8_t TicTacToe1::getResult() {
     return result;
 }
 
-int8_t TicTacToe::count() {
-    return delta;
-}
+

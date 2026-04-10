@@ -5,7 +5,7 @@
 
 class Agent {
     public:
-        virtual void makeMove(SuperTicTacToe &game){};
+        virtual void makeMove(SuperTicTacToe &game) = 0;
 };
 
 

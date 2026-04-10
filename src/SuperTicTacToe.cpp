@@ -1,7 +1,8 @@
 #include "SuperTicTacToe.h"
 
-const uint8_t moveOrder[] = {4, 0, 2, 6, 8, 1, 3, 5, 7};
 
+const uint8_t moveOrder[] = {4, 0, 2, 6, 8, 1, 3, 5, 7};
+const uint8_t boardValue[] = {2, 1, 2, 1, 3, 1, 2, 1, 2};
 unsigned long long myCoolVariable = 0;
 
 int moveToGame(int move) {
@@ -20,11 +21,15 @@ void SuperTicTacToe::makeMove(int move) {
     assert (move >= 0 && move < 81 && "illegal move");
     assert (!finished && "Game Over");
 
+    int gameIndex = moveToGame(move);
+
     if (lastMove != -1 && !games[moveToGameMove(lastMove)].isFinished()) {
-        assert (moveToGame(move) == moveToGameMove(lastMove) && "Move is not in correct Game");
+        assert (gameIndex== moveToGameMove(lastMove) && "Move is not in correct Game");
     }
 
-    TicTacToe& game = games[moveToGame(move)];
+
+
+    TICTACTOE& game = games[gameIndex];
 
     assert (!game.isFinished() && "This Game is already over");
 
@@ -34,14 +39,35 @@ void SuperTicTacToe::makeMove(int move) {
     game.makeMove(lastPlayer, moveToGameMove(move));
 
 
-    if(game.isFinished()) {
-        // check if all games have ended
-        finished = std::all_of(games, games + 9, [](TicTacToe& game) {return game.isFinished();});
+    int _delta;
+    if (lastPlayer) {
+        _delta = 1;
+    } else {
+        _delta = -1;
+    }
+    if (game.isFinished()) {
+        _delta = game.getResult() * 5;
+    }
+    _delta *= boardValue[gameIndex];
+    if (game.isFinished()) {
+        // in this case the returned delta is absolute
+        _delta -= delta[gameIndex];
+        //delta[gameIndex] += _delta; //doesnt matter anymore - delta is not needed later
+    } else {
+        // in this case the returned delta is relative
+        delta[gameIndex] += _delta;
+    }
 
+    delta[9] += _delta;
+
+    if(game.isFinished()) {
         if(game.getResult() != 0) {
             thisGame.makeMove(lastPlayer, moveToGame(move));
             checkForFinish();
         }
+
+        // check if all games have ended
+        finished = finished || std::all_of(games, games + 9, [](TICTACTOE& game) {return game.isFinished();});
     }
 }
 
@@ -106,12 +132,9 @@ double SuperTicTacToe::eval() {
     if(finished) {
         return (double) result;
     }
-    int8_t count = 0;
-    for(TicTacToe game: games) {
-        count += game.count();
-    }
+
     
-    double result = ((double)(count)) / 64;
+    double result = ((double)(delta[9])) / 128;
 
     assert (-1 < result && result < 1 && "bad eval function");
     return result;

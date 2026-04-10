@@ -4,7 +4,7 @@
 
 #ifndef MINIMAX
 #define MINIMAX
-#define _depth 10
+#define _depth 12
 class MiniMax : public Agent {
 
     private:
@@ -15,6 +15,7 @@ class MiniMax : public Agent {
         double negamax(SuperTicTacToe &game, int depth, double a, double b);
     public:
         MiniMax();
+        ~MiniMax();
         void makeMove(SuperTicTacToe &game);
 //        void setDepth(int _depth);
 };

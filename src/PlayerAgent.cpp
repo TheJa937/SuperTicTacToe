@@ -2,13 +2,15 @@
 #include <iostream>
 #include "MoveList.h"
 
-void PlayerAgent::makeMove(SuperTicTacToe &game) {
+void PlayerAgent::makeMove(SuperTicTacToe &game)
+{
     std::cout << "possible moves: ";
     std::vector<int> *temp = new std::vector<int>();
 
     game.getAllMoves(temp);
 
-    for(int i = 0; i < temp->size(); i++) {
+    for (int i = 0; i < temp->size(); i++)
+    {
         std::cout << (*temp)[i] << " ";
     }
     std::cout << std::endl;
@@ -22,5 +24,4 @@ void PlayerAgent::makeMove(SuperTicTacToe &game) {
     b--;
 
     game.makeMove(a * 9 + b);
-
 }

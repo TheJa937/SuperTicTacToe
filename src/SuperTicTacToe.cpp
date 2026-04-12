@@ -29,7 +29,7 @@ void SuperTicTacToe::makeMove(int move) {
 
     assert (!game.isFinished() && "This Game is already over");
 
-    bool lastPlayer = !lastPlayer;
+    lastPlayer = !lastPlayer;
     lastMove = move;
 
     game.makeMove(lastPlayer, moveToGameMove(move));
@@ -59,7 +59,7 @@ void SuperTicTacToe::makeMove(int move) {
 
 
     if(game.isWon()) {
-        delta += lastPlayer ? 1 : -1;
+        delta += boardValue[moveToGame(move)] * (lastPlayer ? 1 : -1);
         thisGame.makeMove(lastPlayer, moveToGame(move));
     }
     if(game.isFinished()){
@@ -127,7 +127,7 @@ void SuperTicTacToe::getAllMoves(std::vector<int> *list) const {
 double SuperTicTacToe::eval() const {
     exploredNodes++;
     if (!isFinished()) {
-        double result = (getLastPlayer() ? 1 : -1) * (double) delta / 8;
+        double result = (getLastPlayer() ? 1 : -1) * (double) delta / 16;
         assert (-1 < result && result < 1 && "bad eval function");
         return result;
     }

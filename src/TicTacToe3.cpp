@@ -89,7 +89,7 @@ TicTacToe1 TicTacToe3::toTicTacToe1() const {
 
 
 void TicTacToe3::makeMove(bool player, int move) {
-    assert (!isFinished && "Game is already Over");
+    assert (!isFinished() && "Game is already Over");
     assert ((0 == getSquare(move)) && "Square is already ocupied");
 
     board += pow3[player][move];

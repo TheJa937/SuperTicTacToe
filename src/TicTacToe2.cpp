@@ -18,6 +18,7 @@ full board: 0000 0111 0111 0111
 
     player X = true , O = false
     
+    last player is stored as top bit of played board
 
 
 */
@@ -25,12 +26,13 @@ full board: 0000 0111 0111 0111
 const uint8_t moveOrder[] = {4, 0, 2, 6, 8, 1, 3, 5, 7};
 const uint16_t moveMask[] = {1024, 512, 256, 64, 32, 16, 4, 2, 1};
 const uint16_t fullBoard = 1911;
+const uint16_t lastPlayerMask = 1<<15;
 const char playerTokens[] = {'O', 'X'};
 const std::string gameOverTokens[] = 
 {
 " _ \n"
 "| |\n"
-" ¯ \n",
+" - \n",
 "   \n"
 " . \n"
 "   \n",
@@ -39,66 +41,84 @@ const std::string gameOverTokens[] =
 "/ \\\n"
  };
 
-void TicTacToe2::checkWin() {
-    if(currMask & (currMask >> 1) & (currMask >> 2) || 
-       currMask & (currMask >> 4) & (currMask >> 8) ||
-       currMask & (currMask >> 5) & (currMask >> 10) ||
-       currMask & (currMask >> 3) & (currMask >> 6)) {
-        finished = true;
-        if(lastPlayer) {
-            result = 1;
-        } else {
-            result = -1;
-        }
+ // 1: game was won by last player      0: draw
+int8_t TicTacToe2::result() const {
+    return isWon();
+}
+
+bool TicTacToe2::finished() const {
+    return playedMask() == fullBoard;
+}
+
+uint16_t TicTacToe2::playedMask() const {
+    return (lastPlayerMask - 1) & _playedMask;
+}
+
+bool TicTacToe2::lastPlayer() const {
+    return _playedMask & lastPlayerMask;
+}
+
+void TicTacToe2::flipLastPlayer() {
+    currMask ^= playedMask();
+    _playedMask ^= lastPlayerMask;
+}
+
+ bool TicTacToe2::checkWin(const uint16_t mask) const {
+    return mask & (mask >> 1) & (mask >> 2) || 
+       mask & (mask >> 4) & (mask >> 8) ||
+       mask & (mask >> 5) & (mask >> 10) ||
+       mask & (mask >> 3) & (mask >> 6);
+ }
+
+  bool TicTacToe2::isWon() const {
+    return currMask == fullBoard;
+ }
+
+void TicTacToe2::handleWin() {
+    if(checkWin(currMask)) {
+        _playedMask |= fullBoard;
+        currMask = fullBoard;
     }
 }
 
 void TicTacToe2::makeMove(bool player, int move) {
-    assert (!finished && "Game is already Over");
-    assert (0 == (bool)(playedMask & moveMask[move]) && "Square is already ocupied");
+    assert (!finished() && "Game is already Over");
+    assert (0 == (bool)(playedMask() & moveMask[move]) && "Square is already ocupied");
 
 
-    if (lastPlayer != player) {
-        currMask ^= playedMask;
+    if (lastPlayer() != player) {
+        flipLastPlayer();
     }
 
     currMask |= moveMask[move];
-    playedMask |= moveMask[move];
-    lastPlayer = player;
+    _playedMask |= moveMask[move];
 
-
-    checkWin();
-
-    if (playedMask == fullBoard) {
-        finished = true;
-    }
-
-
+    handleWin();
 }
 
-bool TicTacToe2::isFinished(){
-    return finished;
+bool TicTacToe2::isFinished() const {
+    return finished();
 }
 
-void TicTacToe2::appendAllMoves(std::vector<int> *moves, int offset) {
-    if(finished) return;
+void TicTacToe2::appendAllMoves(std::vector<int> *moves, int offset) const {
+    if(finished()) return;
 
     for(int i: moveOrder) {
-        if (0 == (playedMask & moveMask[i])) {
+        if (0 == (playedMask() & moveMask[i])) {
             moves->push_back(i + offset);
         }
     }
 }
 
-std::string TicTacToe2::toString() {
+std::string TicTacToe2::toString() const {
     std::string result = "";
 
     for (int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++){
             int index = 3 * i + j;
 
-            if (playedMask & moveMask[index]) {
-                result += playerTokens[lastPlayer == (bool)(currMask & moveMask[index])];
+            if (playedMask() & moveMask[index]) {
+                result += playerTokens[lastPlayer() == (bool)(currMask & moveMask[index])];
             } else {
                 result.append(".");
             }
@@ -109,19 +129,17 @@ std::string TicTacToe2::toString() {
     return result;
 }
 
-std::string TicTacToe2::toFancyString() {
-    if(finished) {
-        return gameOverTokens[result + 1];
+std::string TicTacToe2::toFancyString() const {
+    if (isFinished()) {
+        if (isWon() ) {
+            return gameOverTokens[lastPlayer() ? 2 : 0];
+        } else {
+            return gameOverTokens[1];
+        }
     }
     return toString();
 }
 
-bool TicTacToe2::getLastPlayer() {
-    return lastPlayer;
+bool TicTacToe2::getLastPlayer() const {
+    return lastPlayer();
 }
-
-int8_t TicTacToe2::getResult() {
-    return result;
-}
-
-

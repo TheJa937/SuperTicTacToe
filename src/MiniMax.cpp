@@ -1,14 +1,24 @@
 #include "MiniMax.h"
 #include "SuperTicTacToe.h"
 #include <iostream>
+#include <chrono>
 
 unsigned long long total = 0;
 
 void MiniMax::makeMove(SuperTicTacToe& game) {
-    myCoolVariable = 0;
+    exploredNodes = 0;
+    // Record start time
+    auto start = std::chrono::high_resolution_clock::now();
+
     auto result = bestMove(game);
-    total += myCoolVariable;
-    std::cout << "Move: " << (int) result.first << " Eval: " << (double)result.second << " Games Evaled: " << myCoolVariable << " total: " << total << std::endl;
+
+    // Record end time
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+
+    total += exploredNodes;
+    std::cout << "Move: " << (int) result.first << " Eval: " << (double)result.second << " Games Evaled: " << exploredNodes << " total: " << total << std::endl;
+    std::cout << "Execution time: " << duration.count() << " ms    Speed: " << (double) exploredNodes / duration.count() <<" Nodes/ms"<< std::endl;
     game.makeMove(result.first);
 }
 /*
@@ -57,11 +67,7 @@ std::pair<int8_t, double> MiniMax::bestMove(SuperTicTacToe &game) {
 
 double MiniMax::negamax(SuperTicTacToe &game, int depth, double a, double b) {
     if(game.isFinished() || depth == 0) {
-        if(game.getLastPlayer()) {
-            return game.eval() * -1;
-        } else {
-            return game.eval();
-        }
+        return game.eval() * -1;
     }
 
     double bestValue = -2;

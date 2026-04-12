@@ -30,7 +30,7 @@ const std::string gameOverTokens[] =
 {
 " _ \n"
 "| |\n"
-" ¯ \n",
+" - \n",
 "   \n"
 " . \n"
 "   \n",
@@ -39,14 +39,18 @@ const std::string gameOverTokens[] =
 "/ \\\n"
  };
 
-void TicTacToe1::checkWin() {
-    if(currMask & (currMask << 1) & (currMask << 2)) {
+ bool TicTacToe1::checkWin(const uint32_t mask) const {
+    return mask & (mask >> 1) & (mask >> 2);
+ }
+
+ bool TicTacToe1::isWon() const {
+    return result != 0;
+ }
+
+void TicTacToe1::handleWin() {
+    if(checkWin(currMask)) {
         finished = true;
-        if(lastPlayer) {
-            result = 1;
-        } else {
-            result = -1;
-        }
+        result = 1;
     }
 }
 
@@ -64,7 +68,7 @@ void TicTacToe1::makeMove(bool player, int move) {
     lastPlayer = player;
 
 
-    checkWin();
+    handleWin();
 
     if (playedMask == fullBoard) {
         finished = true;
@@ -73,11 +77,11 @@ void TicTacToe1::makeMove(bool player, int move) {
 
 }
 
-bool TicTacToe1::isFinished(){
+bool TicTacToe1::isFinished() const {
     return finished;
 }
 
-void TicTacToe1::appendAllMoves(std::vector<int> *moves, int offset) {
+void TicTacToe1::appendAllMoves(std::vector<int> *moves, int offset) const {
     if(finished) return;
 
     for(int i: moveOrder) {
@@ -87,7 +91,7 @@ void TicTacToe1::appendAllMoves(std::vector<int> *moves, int offset) {
     }
 }
 
-std::string TicTacToe1::toString() {
+std::string TicTacToe1::toString() const {
     std::string result = "";
 
     for (int i = 0; i < 3; i++) {
@@ -106,19 +110,18 @@ std::string TicTacToe1::toString() {
     return result;
 }
 
-std::string TicTacToe1::toFancyString() {
-    if(finished) {
-        return gameOverTokens[result + 1];
+std::string TicTacToe1::toFancyString() const {
+    if (isFinished()) {
+        if (isWon() ) {
+            return gameOverTokens[getLastPlayer() ? 2 : 0];
+        } else {
+            return gameOverTokens[1];
+        }
     }
     return toString();
 }
 
-bool TicTacToe1::getLastPlayer() {
+bool TicTacToe1::getLastPlayer() const {
     return lastPlayer;
 }
-
-int8_t TicTacToe1::getResult() {
-    return result;
-}
-
 

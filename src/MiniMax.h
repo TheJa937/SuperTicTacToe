@@ -4,7 +4,7 @@
 
 #ifndef MINIMAX
 #define MINIMAX
-#define _depth 12
+#define _depth 14
 class MiniMax : public Agent {
 
     private:

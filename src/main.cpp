@@ -3,8 +3,9 @@
 #include "Agent.h"
 #include "PlayerAgent.h"
 #include "MiniMax.h"
-#include <chrono>
 #include <locale>
+#include <chrono>
+#include "TicTacToe3.h"
 using namespace std;
 
 struct comma_separator : std::numpunct<char> {
@@ -15,7 +16,14 @@ struct comma_separator : std::numpunct<char> {
 int main() {
     std::cout.imbue(std::locale(std::locale(std::cout.getloc(), new comma_separator)));
 
+    auto start = std::chrono::high_resolution_clock::now();
 
+    init();
+
+    // Record end time
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+    std::cout << "Init time: " << duration.count() << " ms" << std::endl;
 
     SuperTicTacToe game;
 
@@ -25,19 +33,8 @@ int main() {
     int i = 0;
 
     while(!game.isFinished()) {
-    // Record start time
-        auto start = std::chrono::high_resolution_clock::now();
-
         
        agents[i % 2]->makeMove(game);
-
-        // Record end time
-        auto end = std::chrono::high_resolution_clock::now();
-
-        // Calculate duration
-        std::chrono::duration<double, std::milli> duration = end - start;
-
-        std::cout << "Execution time: " << duration.count() << " ms" << std::endl;
 
         i++;
         cout << game.toString() << endl;
@@ -46,5 +43,5 @@ int main() {
     for(auto a : agents) {
         delete a;
     }
-    cout << "game ended with result: " << (int)game.getResult() << endl;
+    cout << "game ended with result: " << (int)game.getResult() * ((i%2) ? -1 : 1)<< endl;
 }

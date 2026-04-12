@@ -10,21 +10,26 @@
 
 class TicTacToe2 {
     private:
-        uint16_t playedMask = 0, currMask = 0;
-        int8_t result = 0;
-        bool finished = false;
-        bool lastPlayer = false;
+        uint16_t _playedMask = 0, currMask = 0;
 
-        void checkWin();
+        uint16_t playedMask() const;
+        int8_t result() const;
+        bool finished() const;
+        bool lastPlayer() const;
+        void flipLastPlayer();
+
+        void handleWin();
+        bool checkWin(const uint16_t mask) const;
+
 
     public:
+        bool getLastPlayer() const;
         void makeMove(bool player, int move);
-        bool isFinished();
-        std::string toString();
-        bool getLastPlayer();
-        int8_t getResult();
-        std::string toFancyString();
-        void appendAllMoves(std::vector<int> *moves, int offset);
+        bool isFinished() const;
+        std::string toString() const;
+        std::string toFancyString() const;
+        void appendAllMoves(std::vector<int> *moves, int offset) const;
+        bool isWon() const;
 };
 
 #endif

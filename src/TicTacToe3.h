@@ -2,31 +2,34 @@
 #include <assert.h>
 #include <string>
 #include <vector>
-#include <utility>
-#include "MoveList.h"
+#include <array>
+#include "TicTacToe1.h"
 
-#ifndef TICTACTOE1
-#define TICTACTOE1
+#ifndef TICTACTOE3
+#define TICTACTOE3
 
-class TicTacToe1 {
+void init();
+
+class TicTacToe3 {
     private:
-        uint32_t playedMask = 0, currMask = 0;
+        uint16_t board = 0;
 
-        int8_t result = 0;
-        bool finished = false;
-        bool lastPlayer = false;
 
-        void handleWin();
-        bool checkWin(uint32_t mask) const;
+        uint8_t getSquare(uint8_t index) const;
+
 
     public:
+        TicTacToe1 toTicTacToe1() const;
+        TicTacToe3();
+        TicTacToe3(uint16_t _board);
         void makeMove(bool player, int move);
-        bool getLastPlayer() const;
         bool isFinished() const;
         std::string toString() const;
         std::string toFancyString() const;
         void appendAllMoves(std::vector<int> *moves, int offset) const;
         bool isWon() const;
 };
+
+
 
 #endif
